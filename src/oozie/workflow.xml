@@ -1,0 +1,59 @@
+<workflow-app xmlns="uri:oozie:workflow:0.5" name="kaggle_bimbo">
+	<start to="forecast" />
+	<action name="forecast">
+		<map-reduce>
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/user/hive/warehouse/dashboard.db/kaggle_forecast" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.mapper.new-api</name>
+					<value>true</value>
+				</property>
+				<property>
+					<name>mapred.reducer.new-api</name>
+					<value>true</value>
+				</property>
+				<property>
+					<name>mapreduce.output.fileoutputformat.outputdir</name>
+					<value>/user/hive/warehouse/dashboard.db/kaggle_forecast
+					</value>
+				</property>
+				<property>
+					<name>mapreduce.input.fileinputformat.inputdir</name>
+					<value>/user/hive/warehouse/dashboard.db/kaggle_test_data,/user/hive/warehouse/dashboard.db/kaggle_train_data
+					</value>
+				</property>
+				<property>
+					<name>mapreduce.job.map.class</name>
+					<value>com.secoo.bigdata.kaggle.bimbo.mr.Forecast$M
+					</value>
+				</property>
+				<property>
+					<name>mapreduce.job.reduce.class</name>
+					<value>com.secoo.bigdata.kaggle.bimbo.mr.Forecast$R
+					</value>
+				</property>
+				<property>
+					<name>mapreduce.job.priority</name>
+					<value>LOW</value>
+				</property>
+				<property>
+					<name>mapreduce.job.reduces</name>
+					<value>4</value>
+				</property>
+			</configuration>
+		</map-reduce>
+		<ok to="end" />
+		<error to="fail" />
+	</action>
+
+	<kill name="fail">
+		<message>Action failed, error
+			message[${wf:errorMessage(wf:lastErrorNode())}]
+		</message>
+	</kill>
+	<end name="end" />
+</workflow-app>

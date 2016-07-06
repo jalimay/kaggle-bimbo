@@ -1,0 +1,27 @@
+<assembly>
+    <id>fat</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <excludes>
+            </excludes>
+            <!-- very small jar -->
+            <includes>
+                <include>org.apache.commons:*</include>
+                <!-- 导出TFIDF时候需要激活以下依赖  -->
+                <include>org.apache.commons:commons-math3</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.outputDirectory}</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
